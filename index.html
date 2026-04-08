@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#c0392b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Rayhan OS">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%23c0392b'/><text x='96' y='130' text-anchor='middle' font-size='100' font-family='serif'>🌙</text></svg>">
+<title>Rayhan OS</title>
+<script src="https://js.puter.com/v2/"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --red-light: #e74c3c;
+    --red-pale: #fdecea;
+    --purple: #7b2d8b;
+    --purple-light: #9b59b6;
+    --purple-pale: #f5eafa;
+    --white: #fff;
+    --off-white: #fdf8f9;
+    --gray: #888;
+    --gray-light: #f0eaeb;
+    --text: #2d1a1a;
+    --grad: linear-gradient(135deg, #fdecea 0%, #f5eafa 50%, #fdf0fb 100%);
+    --grad-header: linear-gradient(120deg, #c0392b 0%, #7b2d8b 100%);
+    --shadow: 0 4px 24px rgba(192,57,43,0.10);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--grad);
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--grad-header);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 12px;
+    height: 56px;
+    box-shadow: 0 2px 16px rgba(192,57,43,0.18);
+  }
+  .nav-title {
+    font-family: 'Playfair Display', serif;
+    color: #fff; font-size: 1.25rem; font-weight: 900;
+    letter-spacing: 0.5px;
+    flex: 1;
+  }
+  .nav-tabs {
+    display: flex; gap: 2px;
+  }
+  .nav-tab {
+    padding: 7px 11px; border-radius: 8px;
+    color: rgba(255,255,255,0.75); font-size: 0.72rem; font-weight: 600;
+    cursor: pointer; border: none; background: transparent;
+    transition: all 0.2s; white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+  .nav-tab.active, .nav-tab:hover {
+    background: rgba(255,255,255,0.2); color: #fff;
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 70px 12px 100px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--red);
+    margin-bottom: 12px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    padding: 9px 18px; border-radius: var(--radius-sm);
+    border: none; font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: all 0.18s; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary {
+    background: var(--grad-header); color: #fff;
+    box-shadow: 0 2px 10px rgba(192,57,43,0.18);
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--gray-light); color: var(--text);
+  }
+  .btn-danger {
+    background: var(--red-pale); color: var(--red); font-size: 0.78rem;
+    padding: 5px 10px;
+  }
+  .btn-edit {
+    background: #e8f4fd; color: #2471a3; font-size: 0.75rem;
+    padding: 4px 8px; border-radius: 6px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .btn-edit:hover { background: #d0eaf8; }
+  .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+
+  /* FORM */
+  .form-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; }
+  label { font-size: 0.73rem; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.5px; }
+  input, select, textarea {
+    border: 1.5px solid #e8d8ea; border-radius: var(--radius-sm);
+    padding: 8px 10px; font-size: 0.85rem; font-family: 'DM Sans', sans-serif;
+    background: var(--off-white); color: var(--text); outline: none;
+    transition: border 0.15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--purple-light); }
+
+  /* DATE NAV */
+  .date-nav {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .date-nav .date-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700;
+    background: var(--grad-header);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    flex: 1; text-align: center;
+  }
+  .date-arrow {
+    background: var(--white); border: 1.5px solid #e8d8ea;
+    border-radius: 8px; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1rem; color: var(--purple);
+  }
+
+  /* TODO TABLE */
+  .todo-table-wrap { overflow-x: auto; border-radius: var(--radius-sm); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 700px; }
+  thead tr { background: var(--grad-header); }
+  thead th {
+    color: #fff; padding: 9px 7px; text-align: left;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid #f0e6f0; }
+  tbody tr:nth-child(even) { background: #fdf5fe; }
+  tbody tr:hover { background: var(--purple-pale); }
+  tbody td { padding: 8px 7px; vertical-align: middle; }
+  .todo-name { font-weight: 600; color: var(--text); min-width: 100px; }
+  .roi-val { font-weight: 700; color: var(--red); }
+  .bias-val { font-weight: 700; color: var(--purple); }
+
+  /* CORE BADGE */
+  .badge {
+    display: inline-block; padding: 2px 7px; border-radius: 20px;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3px;
+  }
+  .badge-family { background: #fde8d8; color: #c0392b; }
+  .badge-fire { background: #fff0c2; color: #b8860b; }
+  .badge-health { background: #d8f5e4; color: #1e8449; }
+  .badge-islam { background: #d8eef5; color: #1a6e8b; }
+
+  /* PROGRESS SELECT */
+  .progress-sel {
+    font-size: 0.68rem; padding: 3px 6px; border-radius: 6px;
+    min-width: 90px;
+  }
+  .prog-clarity { background: #fdf0c2; color: #7d6200; border-color: #e8d88a; }
+  .prog-clarity2 { background: #fde8d8; color: #7d3200; border-color: #e8c8aa; }
+  .prog-delegated { background: #d8eef5; color: #1a4e6b; border-color: #aad4e8; }
+  .prog-working { background: #e0d8f5; color: #3a1a7b; border-color: #c0aae8; }
+  .prog-finished { background: #d8f5e4; color: #1a6b2e; border-color: #aae8c0; }
+  .prog-left { background: #fdecea; color: #7b1a1a; border-color: #e8aaaa; }
+
+  /* ADD TODO FORM */
+  .add-form {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px; margin-bottom: 14px;
+  }
+  .form-toggle-btn {
+    width: 100%; padding: 10px; border-radius: var(--radius-sm);
+    border: 2px dashed #d8b8e0; background: var(--purple-pale);
+    color: var(--purple); font-family: 'DM Sans', sans-serif;
+    font-weight: 600; font-size: 0.88rem; cursor: pointer;
+    transition: all 0.2s; margin-bottom: 14px;
+  }
+  .form-toggle-btn:hover { background: var(--purple-pale); border-color: var(--purple); }
+
+  /* EDIT MODAL */
+  .edit-modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 998;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: center;
+    padding: 70px 12px 20px; overflow-y: auto;
+  }
+  .edit-modal-overlay.open { display: flex; }
+  .edit-modal {
+    background: var(--white); border-radius: 20px;
+    padding: 24px; width: 100%; max-width: 500px;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .edit-modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--purple);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+
+  /* REWARD MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 24px;
+    padding: 32px 24px; text-align: center; max-width: 320px; width: 90%;
+    animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .reward-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+  .reward-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 900;
+    background: var(--grad-header);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+  .reward-msg { font-size: 0.9rem; color: var(--gray); margin-bottom: 20px; }
+
+  /* HABIT GRID */
+  .habit-scroll { overflow-x: auto; }
+  .habit-table { border-collapse: collapse; font-size: 0.62rem; min-width: 900px; }
+  .habit-table th {
+    background: var(--grad-header); color: #fff;
+    padding: 6px 4px; font-size: 0.6rem; font-weight: 600;
+    text-align: center; white-space: nowrap; min-width: 28px;
+  }
+  .habit-table th.cat-header {
+    font-size: 0.7rem; letter-spacing: 0.3px;
+  }
+  .habit-table td {
+    border: 1px solid #eee; text-align: center;
+    padding: 2px; width: 28px; height: 28px;
+  }
+  .habit-table td.day-label {
+    font-weight: 700; font-size: 0.7rem; color: var(--purple);
+    background: var(--purple-pale); min-width: 28px;
+    position: sticky; left: 0; z-index: 2;
+  }
+  .habit-cell {
+    width: 22px; height: 22px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 0.8rem; transition: all 0.15s;
+    border: 1.5px solid transparent;
+  }
+  .habit-cell.done { background: var(--grad-header); color: #fff; }
+  .habit-cell:not(.done):hover { background: var(--gray-light); }
+
+  /* DASHBOARD */
+  .dash-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .stat-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900;
+    background: var(--grad-header);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 0.72rem; color: var(--gray); margin-top: 4px; }
+
+  /* DASHBOARD SUB-TABS */
+  .dash-tabs {
+    display: flex; gap: 6px; margin-bottom: 16px;
+  }
+  .dash-tab {
+    flex: 1; padding: 8px 4px; border-radius: 10px;
+    border: 2px solid #e8d8ea; background: var(--white);
+    color: var(--purple); font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 0.78rem; cursor: pointer;
+    transition: all 0.2s; text-align: center;
+  }
+  .dash-tab.active {
+    background: var(--grad-header); color: #fff; border-color: transparent;
+    box-shadow: 0 2px 10px rgba(192,57,43,0.2);
+  }
+  .dash-panel { display: none; }
+  .dash-panel.active { display: block; }
+
+  /* DIARY */
+  .diary-section {
+    margin-top: 20px;
+  }
+  .diary-toggle {
+    width: 100%; padding: 10px 14px; border-radius: var(--radius-sm);
+    border: 2px dashed #c8e6d4; background: #f0faf4;
+    color: #1e6b3a; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; font-size: 0.85rem; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+    margin-bottom: 0;
+  }
+  .diary-toggle:hover { border-color: #1e8449; }
+  .diary-box {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px; margin-top: 10px;
+    display: none;
+  }
+  .diary-box.open { display: block; }
+  .diary-label {
+    font-size: 0.7rem; font-weight: 700; color: #1e8449;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .diary-textarea {
+    width: 100%; min-height: 100px; resize: vertical;
+    border: 1.5px solid #c8e6d4; border-radius: 10px;
+    padding: 10px 12px; font-size: 0.85rem; line-height: 1.6;
+    font-family: 'DM Sans', sans-serif; color: var(--text);
+    background: #f8fffe;
+  }
+  .diary-textarea:focus { border-color: #1e8449; outline: none; }
+  .diary-save-btn {
+    margin-top: 8px; padding: 7px 16px; border-radius: 8px;
+    border: none; background: #1e8449; color: #fff;
+    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.8rem;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .diary-save-btn:hover { background: #166038; }
+  .diary-saved-indicator {
+    display: inline-block; font-size: 0.72rem; color: #1e8449;
+    margin-left: 8px; opacity: 0; transition: opacity 0.3s;
+  }
+  .diary-saved-indicator.show { opacity: 1; }
+
+  /* DIARY PAGE in Dashboard */
+  .diary-entry-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px;
+    border-left: 4px solid #1e8449;
+  }
+  .diary-entry-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem; font-weight: 700; color: var(--purple);
+    margin-bottom: 6px;
+  }
+  .diary-entry-text {
+    font-size: 0.82rem; line-height: 1.7; color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 900;
+    background: var(--grad-header);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  /* HABIT CATEGORY DIVIDER */
+  .habit-cat-div {
+    background: linear-gradient(90deg, #fdecea, #f5eafa);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 0.78rem; font-weight: 700; color: var(--purple);
+    margin: 10px 0 6px;
+    letter-spacing: 0.5px;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d8b8e0; border-radius: 4px; }
+
+  /* NOTE CELL */
+  .note-cell { max-width: 100px; font-size: 0.7rem; color: var(--gray); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* EDIT INLINE */
+  .editable-note { width: 90px; font-size: 0.7rem; padding: 3px 5px; border-radius: 5px; }
+
+  /* empty state */
+  .empty-state {
+    text-align: center; padding: 40px 20px; color: var(--gray);
+    font-size: 0.9rem;
+  }
+  .empty-state span { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+  @media (max-width: 480px) {
+    .dash-grid { grid-template-columns: 1fr 1fr; }
+    .nav-tab { padding: 6px 8px; font-size: 0.65rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-title">🌙 Rayhan OS</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('todo',this)">Tasks</button>
+    <button class="nav-tab" onclick="showPage('habits',this)">Habits</button>
+    <button class="nav-tab" onclick="showPage('dashboard',this)">Dash</button>
+  </div>
+</nav>
+
+<!-- ===== TODO PAGE ===== -->
+<div class="page active" id="page-todo">
+  <div class="date-nav">
+    <div class="date-arrow" onclick="changeDate(-1)">◀</div>
+    <div class="date-display" id="date-display"></div>
+    <div class="date-arrow" onclick="changeDate(1)">▶</div>
+    <button class="btn btn-sm btn-primary" onclick="goToday()">Today</button>
+  </div>
+
+  <button class="form-toggle-btn" onclick="toggleAddForm()" id="add-form-btn">＋ Add New Task</button>
+
+  <div class="add-form" id="add-form" style="display:none">
+    <div class="card-title">New Task</div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2;min-width:180px">
+        <label>Task Name</label>
+        <input id="f-name" placeholder="What needs to be done?" />
+      </div>
+      <div class="form-group">
+        <label>Core</label>
+        <select id="f-core">
+          <option value="family">Family</option>
+          <option value="fire">Fire</option>
+          <option value="health">Health</option>
+          <option value="islam">Islam</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type</label>
+        <select id="f-type">
+          <option value="manual">Manual</option>
+          <option value="delegatable">Delegatable</option>
+          <option value="brain">Brain Work</option>
+          <option value="background">Background Brain</option>
+          <option value="repetitive">Repetitive</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Time Block</label>
+        <input id="f-timeblock" placeholder="e.g. 9-11am" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Impact (1-5)</label>
+        <input id="f-impact" type="number" min="1" max="5" value="3" />
+      </div>
+      <div class="form-group">
+        <label>Urgency (1-5)</label>
+        <input id="f-urgency" type="number" min="1" max="5" value="3" />
+      </div>
+      <div class="form-group">
+        <label>Duration (min)</label>
+        <input id="f-duration" type="number" min="1" value="30" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label>Note</label>
+        <input id="f-note" placeholder="Optional note..." />
+      </div>
+      <div class="form-group" style="flex:none">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" onclick="addTodo()">Add ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="todo-table-wrap">
+      <table id="todo-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Task</th>
+            <th>Core</th>
+            <th>Type</th>
+            <th>Time</th>
+            <th>Imp</th>
+            <th>Urg</th>
+            <th>Min</th>
+            <th>ROI</th>
+            <th>Bias</th>
+            <th>Progress</th>
+            <th>Note</th>
+            <th>Edit</th>
+            <th>Del</th>
+          </tr>
+        </thead>
+        <tbody id="todo-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="empty-state" id="todo-empty" style="display:none">
+    <span>📋</span>No tasks yet. Add your first task above!
+  </div>
+
+  <!-- DIARY SECTION FOR THIS DATE -->
+  <div class="diary-section">
+    <button class="diary-toggle" onclick="toggleDiary()">
+      <span>📖</span>
+      <span id="diary-toggle-label">Open Daily Diary</span>
+    </button>
+    <div class="diary-box" id="diary-box">
+      <div class="diary-label" id="diary-date-label">Journal for today</div>
+      <textarea class="diary-textarea" id="diary-text" placeholder="Write freely... what's happening in your life today?"></textarea>
+      <div style="display:flex;align-items:center">
+        <button class="diary-save-btn" onclick="saveDiary()">Save Entry</button>
+        <span class="diary-saved-indicator" id="diary-saved-ind">✓ Saved</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HABITS PAGE ===== -->
+<div class="page" id="page-habits">
+  <div class="section-header">
+    <div class="section-title">Habit Tracker</div>
+    <select id="habit-month-sel" onchange="renderHabits()" style="border-radius:8px;padding:5px 8px;font-size:0.8rem;border-color:#d8b8e0"></select>
+  </div>
+
+  <div class="habit-scroll">
+    <table class="habit-table" id="habit-table">
+      <thead id="habit-head"></thead>
+      <tbody id="habit-body"></tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:20px">
+    <div class="section-title" style="margin-bottom:12px">📊 Habit Dashboard</div>
+    <div id="habit-dash"></div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD PAGE ===== -->
+<div class="page" id="page-dashboard">
+  <div class="section-title" style="margin-bottom:14px">📊 Dashboard</div>
+
+  <!-- Sub-tabs -->
+  <div class="dash-tabs">
+    <button class="dash-tab active" onclick="showDashPanel('stats',this)">📈 Stats & Tasks</button>
+    <button class="dash-tab" onclick="showDashPanel('diary',this)">📖 All Diaries</button>
+  </div>
+
+  <!-- PANEL 1: Stats -->
+  <div class="dash-panel active" id="dash-panel-stats">
+    <div class="dash-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="d-week-total">-</div>
+        <div class="stat-label">Tasks This Week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="d-week-done">-</div>
+        <div class="stat-label">Finished This Week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="d-month-total">-</div>
+        <div class="stat-label">Tasks This Month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="d-month-done">-</div>
+        <div class="stat-label">Finished This Month</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏆 Top 3 Bias — Weekly Finished Count</div>
+      <div id="d-top3-week"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 Top 3 Bias — Monthly Finished Count</div>
+      <div id="d-top3-month"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔥 Daily Breakdown (This Week)</div>
+      <div id="d-daily-week"></div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: All Diaries -->
+  <div class="dash-panel" id="dash-panel-diary">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:0.8rem;color:var(--gray)">All diary entries in chronological order</div>
+      <button class="btn btn-sm btn-secondary" onclick="renderDiaryPanel()">↻ Refresh</button>
+    </div>
+    <div id="diary-all-entries"></div>
+  </div>
+</div>
+
+<!-- EDIT TASK MODAL -->
+<div class="edit-modal-overlay" id="edit-modal">
+  <div class="edit-modal">
+    <div class="edit-modal-title">
+      ✏️ Edit Task
+      <button onclick="closeEditModal()" style="margin-left:auto;background:var(--gray-light);border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:0.8rem">✕ Close</button>
+    </div>
+    <input type="hidden" id="edit-id" />
+    <div class="form-row">
+      <div class="form-group" style="flex:2;min-width:180px">
+        <label>Task Name</label>
+        <input id="e-name" placeholder="Task name" />
+      </div>
+      <div class="form-group">
+        <label>Core</label>
+        <select id="e-core">
+          <option value="family">Family</option>
+          <option value="fire">Fire</option>
+          <option value="health">Health</option>
+          <option value="islam">Islam</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type</label>
+        <select id="e-type">
+          <option value="manual">Manual</option>
+          <option value="delegatable">Delegatable</option>
+          <option value="brain">Brain Work</option>
+          <option value="background">Background Brain</option>
+          <option value="repetitive">Repetitive</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Time Block</label>
+        <input id="e-timeblock" placeholder="e.g. 9-11am" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Impact (1-5)</label>
+        <input id="e-impact" type="number" min="1" max="5" />
+      </div>
+      <div class="form-group">
+        <label>Urgency (1-5)</label>
+        <input id="e-urgency" type="number" min="1" max="5" />
+      </div>
+      <div class="form-group">
+        <label>Duration (min)</label>
+        <input id="e-duration" type="number" min="1" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:1">
+        <label>Note</label>
+        <input id="e-note" placeholder="Note..." />
+      </div>
+    </div>
+    <div style="margin-top:4px;padding:10px;background:var(--gray-light);border-radius:10px;font-size:0.78rem;color:var(--purple)">
+      <strong>Live Recalculation:</strong> ROI = Impact² × Urgency &nbsp;|&nbsp; Bias = Impact² ÷ Duration
+      <div id="edit-preview" style="margin-top:6px;font-weight:700;color:var(--red)"></div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveEdit()">Save Changes ✓</button>
+      <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- REWARD MODAL -->
+<div class="modal-overlay" id="reward-modal">
+  <div class="modal">
+    <div class="reward-emoji" id="reward-emoji"></div>
+    <div class="reward-title" id="reward-title"></div>
+    <div class="reward-msg" id="reward-msg"></div>
+    <button class="btn btn-primary" onclick="closeReward()">🎉 Yay!</button>
+  </div>
+</div>
+
+<script>
+// ========== STATE ==========
+let currentDate = new Date();
+currentDate.setHours(0,0,0,0);
+let allData = {}; // { "YYYY-MM-DD": [todos] }
+let habitData = {}; // { "YYYY-MM": { day: { habit: bool } } }
+let diaryData = {}; // { "YYYY-MM-DD": "text" }
+let dataLoaded = false;
+
+const HABITS = {
+  islam: ['Salat 1','Salat 2','Salat 3','Salat 4','Salat 5','Quran','Dua'],
+  fire: ['Plan→Exec 5h','Clarity','ROI','Delegation','Clarity 2','1k','5k','10k'],
+  family: ['Helped','Talked'],
+  health: ['Water 1','Water 2','Water 3','Exercise','Book','Cheat Meal','Sleep 10:30','Wake 5am','Shower','Clean','Laugh','Urge','Relapse']
+};
+const ALL_HABITS = [...HABITS.islam,...HABITS.fire,...HABITS.family,...HABITS.health];
+
+const REWARDS = [
+  {emoji:'🍫', title:'Chocolate Time!', msg:'Treat yourself to a chocolate. You earned it!'},
+  {emoji:'✈️', title:'Plan a Tour!', msg:'Dream big — where will you go next?'},
+  {emoji:'😂', title:'Tanmay Bhat!', msg:'Watch a Tanmay Bhat video and laugh!'},
+  {emoji:'🎵', title:'Favourite Song!', msg:'Play your favourite song. Vibe out!'},
+  {emoji:'😏', title:'Flirt Mode!', msg:'You\'re on fire — charm someone today 😉'},
+  {emoji:'💝', title:'Donate!', msg:'Share your success — donate something to someone today.'},
+];
+
+// ========== PUTER STORAGE ==========
+async function saveData() {
+  try {
+    await puter.kv.set('rayhan_todos', JSON.stringify(allData));
+    await puter.kv.set('rayhan_habits', JSON.stringify(habitData));
+    await puter.kv.set('rayhan_diary', JSON.stringify(diaryData));
+  } catch(e) { console.error('Save error:', e); }
+}
+
+async function loadData() {
+  try {
+    const todos = await puter.kv.get('rayhan_todos');
+    const habits = await puter.kv.get('rayhan_habits');
+    const diary = await puter.kv.get('rayhan_diary');
+    if (todos) allData = JSON.parse(todos);
+    if (habits) habitData = JSON.parse(habits);
+    if (diary) diaryData = JSON.parse(diary);
+  } catch(e) { console.error('Load error:', e); }
+  dataLoaded = true;
+  renderTodos();
+  renderHabits();
+  renderDashboard();
+  loadDiaryForDate();
+}
+
+// ========== NAV ==========
+function showPage(p, btn) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (p === 'dashboard') renderDashboard();
+  if (p === 'habits') renderHabits();
+  if (p === 'todo') loadDiaryForDate();
+}
+
+// ========== DATE ==========
+function dateKey(d) {
+  return d.toISOString().slice(0,10);
+}
+function fmtDate(d) {
+  return d.toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+function updateDateDisplay() {
+  document.getElementById('date-display').textContent = fmtDate(currentDate);
+}
+function changeDate(n) {
+  currentDate.setDate(currentDate.getDate() + n);
+  updateDateDisplay(); renderTodos(); loadDiaryForDate();
+}
+function goToday() {
+  currentDate = new Date(); currentDate.setHours(0,0,0,0);
+  updateDateDisplay(); renderTodos(); loadDiaryForDate();
+}
+
+// ========== DIARY ==========
+function loadDiaryForDate() {
+  const key = dateKey(currentDate);
+  const text = diaryData[key] || '';
+  document.getElementById('diary-text').value = text;
+  const label = document.getElementById('diary-date-label');
+  label.textContent = 'Journal for ' + fmtDate(currentDate);
+  // Update toggle label
+  const tl = document.getElementById('diary-toggle-label');
+  tl.textContent = text ? '📝 Edit Diary Entry' : 'Open Daily Diary';
+}
+
+function toggleDiary() {
+  const box = document.getElementById('diary-box');
+  const isOpen = box.classList.contains('open');
+  box.classList.toggle('open');
+  document.getElementById('diary-toggle-label').textContent = !isOpen
+    ? (diaryData[dateKey(currentDate)] ? '✕ Close Diary' : '✕ Close Diary')
+    : (diaryData[dateKey(currentDate)] ? '📝 Edit Diary Entry' : 'Open Daily Diary');
+}
+
+function saveDiary() {
+  const key = dateKey(currentDate);
+  const text = document.getElementById('diary-text').value;
+  if (text.trim()) {
+    diaryData[key] = text;
+  } else {
+    delete diaryData[key];
+  }
+  saveData();
+  const ind = document.getElementById('diary-saved-ind');
+  ind.classList.add('show');
+  setTimeout(() => ind.classList.remove('show'), 2000);
+  loadDiaryForDate();
+}
+
+// ========== TODO ==========
+function toggleAddForm() {
+  const f = document.getElementById('add-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  document.getElementById('add-form-btn').textContent = f.style.display === 'none' ? '＋ Add New Task' : '✕ Close';
+}
+
+function addTodo() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) return alert('Please enter a task name');
+  const impact = parseFloat(document.getElementById('f-impact').value)||3;
+  const urgency = parseFloat(document.getElementById('f-urgency').value)||3;
+  const duration = parseFloat(document.getElementById('f-duration').value)||30;
+  const roi = impact * impact * urgency;
+  const bias = (impact * impact) / duration;
+  const todo = {
+    id: Date.now(),
+    name,
+    core: document.getElementById('f-core').value,
+    type: document.getElementById('f-type').value,
+    timeblock: document.getElementById('f-timeblock').value,
+    impact, urgency, duration,
+    roi: Math.round(roi*10)/10,
+    bias: Math.round(bias*100)/100,
+    progress: 'clarity',
+    note: document.getElementById('f-note').value,
+    created: new Date().toISOString()
+  };
+  const key = dateKey(currentDate);
+  if (!allData[key]) allData[key] = [];
+  allData[key].push(todo);
+  saveData(); renderTodos();
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-note').value = '';
+  document.getElementById('f-timeblock').value = '';
+}
+
+function deleteTodo(id) {
+  if (!confirm('Delete this task?')) return;
+  const key = dateKey(currentDate);
+  allData[key] = (allData[key]||[]).filter(t => t.id !== id);
+  saveData(); renderTodos();
+}
+
+function updateProgress(id, val) {
+  const key = dateKey(currentDate);
+  const t = (allData[key]||[]).find(t=>t.id===id);
+  if (!t) return;
+  const wasFinished = t.progress === 'finished';
+  t.progress = val;
+  if (val === 'finished' && !wasFinished) showReward();
+  saveData(); renderTodos();
+}
+
+function updateNote(id, val) {
+  const key = dateKey(currentDate);
+  const t = (allData[key]||[]).find(t=>t.id===id);
+  if (t) t.note = val;
+  saveData();
+}
+
+// ========== EDIT TASK ==========
+function openEditModal(id) {
+  const key = dateKey(currentDate);
+  const t = (allData[key]||[]).find(t=>t.id===id);
+  if (!t) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('e-name').value = t.name;
+  document.getElementById('e-core').value = t.core;
+  document.getElementById('e-type').value = t.type;
+  document.getElementById('e-timeblock').value = t.timeblock||'';
+  document.getElementById('e-impact').value = t.impact;
+  document.getElementById('e-urgency').value = t.urgency;
+  document.getElementById('e-duration').value = t.duration;
+  document.getElementById('e-note').value = t.note||'';
+  updateEditPreview();
+  document.getElementById('edit-modal').classList.add('open');
+
+  // Live recalculation listeners
+  ['e-impact','e-urgency','e-duration'].forEach(fid => {
+    document.getElementById(fid).oninput = updateEditPreview;
+  });
+}
+
+function updateEditPreview() {
+  const impact = parseFloat(document.getElementById('e-impact').value)||0;
+  const urgency = parseFloat(document.getElementById('e-urgency').value)||0;
+  const duration = parseFloat(document.getElementById('e-duration').value)||1;
+  const roi = Math.round(impact * impact * urgency * 10) / 10;
+  const bias = Math.round((impact * impact / duration) * 100) / 100;
+  document.getElementById('edit-preview').textContent = `→ ROI: ${roi}  |  Bias: ${bias}`;
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function saveEdit() {
+  const id = parseInt(document.getElementById('edit-id').value);
+  const key = dateKey(currentDate);
+  const t = (allData[key]||[]).find(t=>t.id===id);
+  if (!t) return;
+
+  const name = document.getElementById('e-name').value.trim();
+  if (!name) return alert('Task name is required');
+
+  const impact = parseFloat(document.getElementById('e-impact').value)||3;
+  const urgency = parseFloat(document.getElementById('e-urgency').value)||3;
+  const duration = parseFloat(document.getElementById('e-duration').value)||30;
+
+  t.name = name;
+  t.core = document.getElementById('e-core').value;
+  t.type = document.getElementById('e-type').value;
+  t.timeblock = document.getElementById('e-timeblock').value;
+  t.impact = impact;
+  t.urgency = urgency;
+  t.duration = duration;
+  t.roi = Math.round(impact * impact * urgency * 10) / 10;
+  t.bias = Math.round((impact * impact / duration) * 100) / 100;
+  t.note = document.getElementById('e-note').value;
+
+  saveData();
+  renderTodos(); // re-render re-sorts by bias
+  closeEditModal();
+}
+
+function renderTodos() {
+  updateDateDisplay();
+  const key = dateKey(currentDate);
+  let todos = [...(allData[key]||[])];
+  todos.sort((a,b) => b.bias - a.bias);
+  const tbody = document.getElementById('todo-body');
+  const empty = document.getElementById('todo-empty');
+  if (!todos.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    document.getElementById('todo-table').style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  document.getElementById('todo-table').style.display = '';
+  const coreClass = {family:'badge-family',fire:'badge-fire',health:'badge-health',islam:'badge-islam'};
+  const progClass = {clarity:'prog-clarity','clarity 2':'prog-clarity2',delegated:'prog-delegated',working:'prog-working',finished:'prog-finished',left:'prog-left'};
+  tbody.innerHTML = todos.map((t,i) => `
+    <tr id="row-${t.id}">
+      <td style="color:var(--purple);font-weight:700">${i+1}</td>
+      <td class="todo-name">${escHtml(t.name)}</td>
+      <td><span class="badge ${coreClass[t.core]||''}">${t.core}</span></td>
+      <td style="font-size:0.68rem;color:var(--gray)">${fmtType(t.type)}</td>
+      <td style="font-size:0.7rem">${escHtml(t.timeblock||'—')}</td>
+      <td style="text-align:center">${t.impact}</td>
+      <td style="text-align:center">${t.urgency}</td>
+      <td style="text-align:center">${t.duration}</td>
+      <td class="roi-val" style="text-align:center">${t.roi}</td>
+      <td class="bias-val" style="text-align:center">${t.bias}</td>
+      <td>
+        <select class="progress-sel ${progClass[t.progress]||''}" onchange="updateProgress(${t.id},this.value);this.className='progress-sel '+(${JSON.stringify(progClass)}[this.value]||'')">
+          ${['clarity','clarity 2','delegated','working','finished','left'].map(p=>`<option value="${p}" ${t.progress===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+      </td>
+      <td><input class="editable-note" value="${escHtml(t.note||'')}" onchange="updateNote(${t.id},this.value)" placeholder="note..."/></td>
+      <td><button class="btn-edit" onclick="openEditModal(${t.id})">✏️ Edit</button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteTodo(${t.id})">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+function fmtType(t) {
+  const m={manual:'Manual',delegatable:'Deleg.',brain:'Brain',background:'BG Brain',repetitive:'Repeat'};
+  return m[t]||t;
+}
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ========== REWARD ==========
+function showReward() {
+  const r = REWARDS[Math.floor(Math.random()*REWARDS.length)];
+  document.getElementById('reward-emoji').textContent = r.emoji;
+  document.getElementById('reward-title').textContent = r.title;
+  document.getElementById('reward-msg').textContent = r.msg;
+  document.getElementById('reward-modal').classList.add('open');
+}
+function closeReward() {
+  document.getElementById('reward-modal').classList.remove('open');
+}
+
+// ========== HABITS ==========
+function initHabitMonthSel() {
+  const sel = document.getElementById('habit-month-sel');
+  const now = new Date();
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const key = d.toISOString().slice(0,7);
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = d.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    if (i===0) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function renderHabits() {
+  const monthKey = document.getElementById('habit-month-sel').value;
+  if (!monthKey) return;
+  const [yr,mo] = monthKey.split('-').map(Number);
+  const daysInMonth = new Date(yr, mo, 0).getDate();
+  if (!habitData[monthKey]) habitData[monthKey] = {};
+
+  const head = document.getElementById('habit-head');
+  const body = document.getElementById('habit-body');
+
+  const cats = [
+    {name:'Islam 🌙', habits: HABITS.islam, color:'#1a6e8b'},
+    {name:'Fire 🔥', habits: HABITS.fire, color:'#b8860b'},
+    {name:'Family 👨‍👩‍👧', habits: HABITS.family, color:'#c0392b'},
+    {name:'Health 💪', habits: HABITS.health, color:'#1e8449'},
+  ];
+
+  head.innerHTML = `
+    <tr>
+      <th style="position:sticky;left:0;z-index:3">Day</th>
+      ${cats.map(c => `<th colspan="${c.habits.length}" class="cat-header" style="background:${c.color}">${c.name}</th>`).join('')}
+    </tr>
+    <tr>
+      <th style="position:sticky;left:0;z-index:3;background:var(--grad-header)">—</th>
+      ${cats.flatMap(c => c.habits.map(h => `<th title="${h}">${h.length>6?h.slice(0,6)+'…':h}</th>`)).join('')}
+    </tr>
+  `;
+
+  body.innerHTML = '';
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayKey = String(day).padStart(2,'0');
+    if (!habitData[monthKey][dayKey]) habitData[monthKey][dayKey] = {};
+    const dayDate = new Date(yr, mo-1, day);
+    const dayName = dayDate.toLocaleDateString('en-US',{weekday:'short'});
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="day-label">${day}<br><span style="font-size:0.55rem;font-weight:400">${dayName}</span></td>`;
+    cats.forEach(cat => {
+      cat.habits.forEach(h => {
+        const done = !!habitData[monthKey][dayKey][h];
+        const td = document.createElement('td');
+        const cell = document.createElement('div');
+        cell.className = 'habit-cell' + (done?' done':'');
+        cell.textContent = done ? '✓' : '';
+        cell.title = h;
+        cell.onclick = () => toggleHabit(monthKey, dayKey, h, cell);
+        td.appendChild(cell);
+        tr.appendChild(td);
+      });
+    });
+    body.appendChild(tr);
+  }
+  renderHabitDash(monthKey, yr, mo, daysInMonth, cats);
+}
+
+function toggleHabit(monthKey, dayKey, habit, cell) {
+  if (!habitData[monthKey]) habitData[monthKey] = {};
+  if (!habitData[monthKey][dayKey]) habitData[monthKey][dayKey] = {};
+  const cur = !!habitData[monthKey][dayKey][habit];
+  habitData[monthKey][dayKey][habit] = !cur;
+  cell.classList.toggle('done');
+  cell.textContent = !cur ? '✓' : '';
+  saveData();
+  const [yr,mo] = monthKey.split('-').map(Number);
+  const daysInMonth = new Date(yr, mo, 0).getDate();
+  const cats = [
+    {name:'Islam 🌙', habits: HABITS.islam},
+    {name:'Fire 🔥', habits: HABITS.fire},
+    {name:'Family 👨‍👩‍👧', habits: HABITS.family},
+    {name:'Health 💪', habits: HABITS.health},
+  ];
+  renderHabitDash(monthKey, yr, mo, daysInMonth, cats);
+}
+
+function renderHabitDash(monthKey, yr, mo, daysInMonth, cats) {
+  const dash = document.getElementById('habit-dash');
+  let html = '<div class="dash-grid">';
+  cats.forEach(cat => {
+    let total = 0, done = 0;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayKey = String(day).padStart(2,'0');
+      cat.habits.forEach(h => {
+        total++;
+        if (habitData[monthKey]?.[dayKey]?.[h]) done++;
+      });
+    }
+    const pct = total ? Math.round(done/total*100) : 0;
+    html += `<div class="stat-card">
+      <div class="stat-num">${pct}%</div>
+      <div class="stat-label">${cat.name}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weekStart = new Date(today); weekStart.setDate(today.getDate() - today.getDay());
+  html += '<div class="card"><div class="card-title">📅 This Week</div><div style="display:flex;flex-wrap:wrap;gap:8px">';
+  for (let i=0; i<7; i++) {
+    const d = new Date(weekStart); d.setDate(weekStart.getDate()+i);
+    const mKey = d.toISOString().slice(0,7);
+    const dayKey = String(d.getDate()).padStart(2,'0');
+    let total=0, done=0;
+    ALL_HABITS.forEach(h => {
+      total++;
+      if (habitData[mKey]?.[dayKey]?.[h]) done++;
+    });
+    const pct = total ? Math.round(done/total*100) : 0;
+    const isToday = d.toDateString()===today.toDateString();
+    html += `<div style="flex:1;min-width:60px;text-align:center;background:${isToday?'var(--red-pale)':'var(--gray-light)'};border-radius:10px;padding:8px 4px">
+      <div style="font-size:0.65rem;color:var(--gray)">${d.toLocaleDateString('en-US',{weekday:'short'})}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--purple)">${pct}%</div>
+    </div>`;
+  }
+  html += '</div></div>';
+  dash.innerHTML = html;
+}
+
+// ========== DASHBOARD ==========
+function showDashPanel(panel, btn) {
+  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('dash-panel-'+panel).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (panel === 'diary') renderDiaryPanel();
+}
+
+function renderDashboard() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const weekStart = new Date(now); weekStart.setDate(now.getDate()-now.getDay());
+
+  let weekTotal=0, weekDone=0, monthTotal=0, monthDone=0;
+  const weekBiasMap = {}; // bias group -> {finished, total}
+  const monthBiasMap = {};
+  const dailyWeek = {};
+
+  Object.entries(allData).forEach(([dateStr, todos]) => {
+    const d = new Date(dateStr+'T00:00:00');
+    const inWeek = d >= weekStart && d <= now;
+    const inMonth = d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+
+    if (inWeek) {
+      weekTotal += todos.length;
+      weekDone += todos.filter(t=>t.progress==='finished').length;
+      // Build bias buckets for weekly top 3
+      todos.forEach(t => {
+        const bkey = t.name + '||' + t.bias;
+        if (!weekBiasMap[bkey]) weekBiasMap[bkey] = {name:t.name, bias:t.bias, finished:0, total:0};
+        weekBiasMap[bkey].total++;
+        if (t.progress==='finished') weekBiasMap[bkey].finished++;
+      });
+      const dayName = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      dailyWeek[dayName] = {total:todos.length, done:todos.filter(t=>t.progress==='finished').length};
+    }
+    if (inMonth) {
+      monthTotal += todos.length;
+      monthDone += todos.filter(t=>t.progress==='finished').length;
+      todos.forEach(t => {
+        const bkey = t.name + '||' + t.bias;
+        if (!monthBiasMap[bkey]) monthBiasMap[bkey] = {name:t.name, bias:t.bias, finished:0, total:0};
+        monthBiasMap[bkey].total++;
+        if (t.progress==='finished') monthBiasMap[bkey].finished++;
+      });
+    }
+  });
+
+  document.getElementById('d-week-total').textContent = weekTotal;
+  document.getElementById('d-week-done').textContent = weekDone;
+  document.getElementById('d-month-total').textContent = monthTotal;
+  document.getElementById('d-month-done').textContent = monthDone;
+
+  // Top 3 by bias — show finished count
+  const wTop3 = Object.values(weekBiasMap).sort((a,b)=>b.bias-a.bias).slice(0,3);
+  document.getElementById('d-top3-week').innerHTML = wTop3.length ? wTop3.map((t,i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f0e6f0">
+      <span style="font-size:1rem;font-weight:900;color:var(--purple);min-width:20px">${['🥇','🥈','🥉'][i]||i+1}</span>
+      <span style="flex:1;font-size:0.82rem;font-weight:600">${escHtml(t.name)}</span>
+      <span style="font-size:0.7rem;color:var(--gray)">Bias: ${t.bias}</span>
+      <span style="font-size:0.78rem;font-weight:700;color:#1a6b2e;background:#d8f5e4;padding:3px 9px;border-radius:12px">${t.finished}/${t.total} done</span>
+    </div>
+  `).join('') : '<div class="empty-state" style="padding:20px"><span>📋</span>No tasks this week</div>';
+
+  const mTop3 = Object.values(monthBiasMap).sort((a,b)=>b.bias-a.bias).slice(0,3);
+  document.getElementById('d-top3-month').innerHTML = mTop3.length ? mTop3.map((t,i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f0e6f0">
+      <span style="font-size:1rem;font-weight:900;color:var(--purple);min-width:20px">${['🥇','🥈','🥉'][i]||i+1}</span>
+      <span style="flex:1;font-size:0.82rem;font-weight:600">${escHtml(t.name)}</span>
+      <span style="font-size:0.7rem;color:var(--gray)">Bias: ${t.bias}</span>
+      <span style="font-size:0.78rem;font-weight:700;color:#1a6b2e;background:#d8f5e4;padding:3px 9px;border-radius:12px">${t.finished}/${t.total} done</span>
+    </div>
+  `).join('') : '<div class="empty-state" style="padding:20px"><span>📋</span>No tasks this month</div>';
+
+  // Daily breakdown
+  let dHtml = '';
+  if (Object.keys(dailyWeek).length) {
+    dHtml = Object.entries(dailyWeek).map(([day,{total,done}]) => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0e6f0">
+        <span style="font-size:0.78rem;font-weight:600;min-width:90px">${day}</span>
+        <div style="flex:1;background:#f0e6f0;border-radius:20px;height:10px;overflow:hidden">
+          <div style="height:100%;width:${total?Math.round(done/total*100):0}%;background:var(--grad-header);border-radius:20px;transition:width 0.5s"></div>
+        </div>
+        <span style="font-size:0.75rem;color:var(--gray)">${done}/${total}</span>
+      </div>
+    `).join('');
+  } else { dHtml = '<div class="empty-state" style="padding:20px"><span>📋</span>No data this week</div>'; }
+  document.getElementById('d-daily-week').innerHTML = dHtml;
+}
+
+function renderDiaryPanel() {
+  const container = document.getElementById('diary-all-entries');
+  const entries = Object.entries(diaryData)
+    .filter(([,v]) => v && v.trim())
+    .sort(([a],[b]) => a.localeCompare(b));
+
+  if (!entries.length) {
+    container.innerHTML = '<div class="empty-state"><span>📖</span>No diary entries yet. Write your first one on the Tasks page!</div>';
+    return;
+  }
+
+  container.innerHTML = entries.map(([dateStr, text]) => {
+    const d = new Date(dateStr + 'T00:00:00');
+    const label = d.toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    return `
+      <div class="diary-entry-card">
+        <div class="diary-entry-date">📖 ${label}</div>
+        <div class="diary-entry-text">${escHtml(text)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ========== INIT ==========
+updateDateDisplay();
+initHabitMonthSel();
+loadData();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+
+</body>
+</html>
